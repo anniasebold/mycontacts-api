@@ -1,11 +1,23 @@
+const ContactsRepository = require('../repositories/ContactsRepository');
+
 class ContactController {
-  index(request, response) {
+  async index(request, response) {
     // Listar todos os registros
-    response.send('Send from Contact Controller');
+    const contacts = await ContactsRepository.findAll();
+    response.json(contacts);
   }
 
-  show() {
-    // Obter UM registro
+  async show(request, response) {
+    // Listar UM registro correspondente
+    const { id } = request.params;
+    const contact = await ContactsRepository.findById(id);
+
+    if (!contact) {
+      // No .status é necessário passar um body
+      return response.status(404).json({ error: 'Contact not found' });
+    }
+
+    response.json(contact);
   }
 
   store() {
@@ -16,8 +28,19 @@ class ContactController {
     // Editar um registro
   }
 
-  delete() {
+  async delete(request, response) {
     // Deletar um registro
+    const { id } = request.params;
+    const contact = await ContactsRepository.findById(id);
+
+    if (!contact) {
+      return response.status(404).json({ error: 'Contact not found' });
+    }
+
+    await ContactsRepository.delete(id);
+    // No sendStatus não é necessário um body, somente o status
+    // 204: No Content
+    response.sendStatus(204);
   }
 }
 
