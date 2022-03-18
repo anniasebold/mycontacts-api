@@ -10,6 +10,9 @@ const client = new Client({
 
 client.connect();
 
+/* Passando o query e os valores
+  a serem adicionados de forma separada
+  evitando o SQL Injection */
 exports.query = async (query, values) => {
   const { rows } = await client.query(query, values);
   return rows;
