@@ -42,49 +42,49 @@ class ContactController {
     response.json(contact);
   }
 
-  // async update(request, response) {
-  //   // Editar um registro
-  //   const { id } = request.params;
-  //   const {
-  //     name, email, phone, category_id,
-  //   } = request.body;
+  async update(request, response) {
+    // Editar um registro
+    const { id } = request.params;
+    const {
+      name, email, phone, category_id,
+    } = request.body;
 
-  //   const contactExists = await ContactsRepository.findById(id);
+    const contactExists = await ContactsRepository.findById(id);
 
-  //   if (!contactExists) {
-  //     return response.status(400).json({ error: 'Contact not fund' });
-  //   }
+    if (!contactExists) {
+      return response.status(400).json({ error: 'Contact not fund' });
+    }
 
-  //   if (!name) {
-  //     return response.status(400).json({ error: 'Name is required' });
-  //   }
+    if (!name) {
+      return response.status(400).json({ error: 'Name is required' });
+    }
 
-  //   const contactByEmail = await ContactsRepository.findByEmail(email);
-  //   if (contactByEmail && contactByEmail.id !== id) {
-  //     return response.status(400).json({ error: 'This email is already in use' });
-  //   }
+    const contactByEmail = await ContactsRepository.findByEmail(email);
+    if (contactByEmail && contactByEmail.id !== id) {
+      return response.status(400).json({ error: 'This email is already in use' });
+    }
 
-  //   const contact = await ContactsRepository.update(id, {
-  //     name, email, phone, category_id,
-  //   });
+    const contact = await ContactsRepository.update(id, {
+      name, email, phone, category_id,
+    });
 
-  //   response.send(contact);
-  // }
+    response.send(contact);
+  }
 
-  // async delete(request, response) {
-  //   // Deletar um registro
-  //   const { id } = request.params;
-  //   const contact = await ContactsRepository.findById(id);
+  async delete(request, response) {
+    // Deletar um registro
+    const { id } = request.params;
+    const contact = await ContactsRepository.findById(id);
 
-  //   if (!contact) {
-  //     return response.status(404).json({ error: 'Contact not found' });
-  //   }
+    if (!contact) {
+      return response.status(404).json({ error: 'Contact not found' });
+    }
 
-  //   await ContactsRepository.delete(id);
-  //   // No sendStatus não é necessário um body, somente o status
-  //   // 204: No Content
-  //   response.sendStatus(204);
-  // }
+    await ContactsRepository.delete(id);
+    // No sendStatus não é necessário um body, somente o status
+    // 204: No Content
+    response.sendStatus(204);
+  }
 }
 
 // Singleton

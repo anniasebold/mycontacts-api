@@ -30,12 +30,10 @@ class ContactsRepository {
     return row;
   }
 
-  // delete(id) {
-  //   return new Promise((resolve) => {
-  //     contacts = contacts.filter((contact) => contact.id !== id);
-  //     resolve();
-  //   });
-  // }
+  async delete(id) {
+    const [row] = await db.query('DELETE FROM contacts WHERE id = $1', [id]);
+    return row;
+  }
 
   async create({
     name, email, phone, category_id,
@@ -55,24 +53,17 @@ class ContactsRepository {
     */
   }
 
-  // update(id, {
-  //   name, email, phone, category_id,
-  // }) {
-  //   return new Promise((resolve) => {
-  //     const updatedContact = {
-  //       id,
-  //       name,
-  //       email,
-  //       phone,
-  //       category_id,
-  //     };
-
-  //     contacts = contacts.map((contact) => (
-  //       contact.id === id ? updatedContact : contact
-  //     ));
-  //     resolve(updatedContact);
-  //   });
-  // }
+  async update(id, {
+    name, email, phone, category_id,
+  }) {
+    const [row] = await db.query(`
+    UPDATE contacts set name = $2,
+    email = $3,
+    phone = $4,
+    category_id = $5
+    WHERE id = $1`, [id, name, email, phone, category_id]);
+    return row;
+  }
 }
 
 module.exports = new ContactsRepository();
