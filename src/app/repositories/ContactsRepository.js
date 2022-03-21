@@ -31,8 +31,12 @@ class ContactsRepository {
   }
 
   async delete(id) {
-    const [row] = await db.query('DELETE FROM contacts WHERE id = $1', [id]);
-    return row;
+    /* No método de DELETE do db.query sempre será retornado
+       um array vazio então se for feita a desestruturação vai ser retornado undefined
+       [] == undefined == false
+    */
+    const deleteOp = await db.query('DELETE FROM contacts WHERE id = $1', [id]);
+    return deleteOp;
   }
 
   async create({
@@ -56,12 +60,16 @@ class ContactsRepository {
   async update(id, {
     name, email, phone, category_id,
   }) {
+    /*
+      Como a função db.query sempre retorna um array
+      para pegar a primeira posição desse array
+      podemos fazer a desestruturação
+    */
     const [row] = await db.query(`
-    UPDATE contacts set name = $2,
-    email = $3,
-    phone = $4,
-    category_id = $5
-    WHERE id = $1`, [id, name, email, phone, category_id]);
+    UPDATE contacts
+    SET name = $2, email = $3, phone = $4, category_id = $5
+    WHERE id = $1
+    RETURNING *`, [id, name, email, phone, category_id]);
     return row;
   }
 }

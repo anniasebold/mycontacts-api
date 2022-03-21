@@ -74,11 +74,15 @@ class ContactController {
   async delete(request, response) {
     // Deletar um registro
     const { id } = request.params;
-    const contact = await ContactsRepository.findById(id);
+    /*
+      A função sempre vai tentar deletar um registro, independente do contato existir ou não.
 
-    if (!contact) {
-      return response.status(404).json({ error: 'Contact not found' });
-    }
+      const contact = await ContactsRepository.findById(id);
+
+      if (!contact) {
+        return response.status(404).json({ error: 'Contact not found' });
+      }
+    */
 
     await ContactsRepository.delete(id);
     // No sendStatus não é necessário um body, somente o status
