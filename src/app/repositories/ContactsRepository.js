@@ -21,7 +21,11 @@ class ContactsRepository {
     // De novo utilizando o blind
     /* Desestruturei o array que é retornado para trazer somente a primeira posição */
     // O PostgreSQL sempre vai mandar um array mesmo que só tenha um registro nele
-    const [row] = await db.query('SELECT * FROM contacts WHERE id = $1', [id]);
+    const [row] = await db.query(`
+    SELECT contacts.*, categories.name AS category_name
+    FROM contacts
+    LEFT JOIN categories ON categories.id = contacts.category_id
+    WHERE contacts.id = $1`, [id]);
     return row;
   }
 
