@@ -8,16 +8,17 @@ class CategoryController {
   }
 
   async store(request, response) {
+    // Desestruturando o name do body
     const { name } = request.body;
+
+    if (!name) {
+      return response.json({ error: 'Category Name is required' });
+    }
 
     const categoryExists = await ContactsRepository.findByName(name);
 
     if (categoryExists) {
       return response.json({ error: 'Category Name already exists' });
-    }
-
-    if (!name) {
-      return response.json({ error: 'Category Name is required' });
     }
 
     const category = await ContactsRepository.create({ name });
