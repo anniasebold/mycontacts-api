@@ -1,9 +1,9 @@
-const ContactsRepository = require('../repositories/CategoriesRepository');
+const CategoriesRepository = require('../repositories/CategoriesRepository');
 
 class CategoryController {
   async index(request, response) {
     const { orderBy } = request.query;
-    const categories = await ContactsRepository.findAll(orderBy);
+    const categories = await CategoriesRepository.findAll(orderBy);
     return response.json(categories);
   }
 
@@ -12,16 +12,49 @@ class CategoryController {
     const { name } = request.body;
 
     if (!name) {
-      return response.json({ error: 'Category Name is required' });
+      return response.status(400).json({ error: 'Category Name is required' });
     }
 
-    const categoryExists = await ContactsRepository.findByName(name);
+    const categoryExists = await CategoriesRepository.findByName(name);
 
     if (categoryExists) {
-      return response.json({ error: 'Category Name already exists' });
+      return response.status(400).json({ error: 'Category Name already exists' });
     }
 
-    const category = await ContactsRepository.create({ name });
+    const category = await CategoriesRepository.create({ name });
+    response.send(category);
+  }
+
+  async update(request, response) {
+    const { id } = request.params;
+    const { name } = request.body;
+
+    const categoryExists = await CategoriesRepository.findById(id);
+
+    if (!categoryExists) {
+      return response.status(400).json({ error: 'Category not found' });
+    }
+
+    const categoryNameExists = await CategoriesRepository.findByName(name);
+
+    if (categoryNameExists) {
+      return response.status(400).json({ error: 'Category Name already exists' });
+    }
+
+    const category = await CategoriesRepository.update(id, { name });
+    response.send(category);
+  }
+
+  async delete(request, response) {
+    const { id } = request.params;
+
+    const categoryExists = await CategoriesRepository.findById(id);
+
+    if (!categoryExists) {
+      return response.status(400).json({ error: 'Category not found' });
+    }
+
+    const category = await CategoriesRepository.delete(id);
     response.send(category);
   }
 }

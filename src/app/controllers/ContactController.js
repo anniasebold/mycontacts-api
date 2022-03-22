@@ -52,7 +52,7 @@ class ContactController {
     const contactExists = await ContactsRepository.findById(id);
 
     if (!contactExists) {
-      return response.status(400).json({ error: 'Contact not fund' });
+      return response.status(400).json({ error: 'Contact not found' });
     }
 
     if (!name) {
